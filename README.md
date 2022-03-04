@@ -1,187 +1,45 @@
-[![Circle CI](https://circleci.com/gh/sameersbn/docker-squid.svg?style=shield)](https://circleci.com/gh/sameersbn/docker-squid) [![Docker Repository on Quay.io](https://quay.io/repository/sameersbn/squid/status "Docker Repository on Quay.io")](https://quay.io/repository/sameersbn/squid)
+# Lokinet inside Docker
 
-# sameersbn/squid:3.5.27-1
+Run Lokinet inside Docker without much hassle.
+Note that this image just downloads, compiles, and starts Lokinet. It has no practical purpose aside being a base on which other containers (like Caddy routed with Lokinet inside Docker) can be built.
 
-- [Introduction](#introduction)
-  - [Contributing](#contributing)
-  - [Issues](#issues)
-- [Getting started](#getting-started)
-  - [Installation](#installation)
-  - [Quickstart](#quickstart)
-  - [Command-line arguments](#command-line-arguments)
-  - [Persistence](#persistence)
-  - [Configuration](#configuration)
-  - [Usage](#usage)
-  - [Logs](#logs)
-- [Maintenance](#maintenance)
-  - [Upgrading](#upgrading)
-  - [Shell Access](#shell-access)
+## Compiling
 
-# Introduction
+**Attention**: you don't need to do this! There's already a pre-built image on [DockerHub](https://hub.docker.com/r/massiveboxe/lokinet). You might want to do compile the image by yourself only if the DockerHub one doesn't work on your architecture or you don't trust that image.
 
-`Dockerfile` to create a [Docker](https://www.docker.com/) container image for [Squid proxy server](http://www.squid-cache.org/).
+After cloning the repository and CD-ing in the correct folder, run:   
+`sudo docker build . -t massiveboxe/lokinet`
 
-Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more. It reduces bandwidth and improves response times by caching and reusing frequently-requested web pages. Squid has extensive access controls and makes a great server accelerator.
+## Running
 
-## Contributing
+In case you want to run this image, be aware that because of Docker quirks, you have to give the container the NET_ADMIN privilege, and  share the TUN device.
+This probably doesn't work on Windows.
+docker stop lokinet 
+docker rm lokinet 
+docker run --name lokinet --publish 3128:3128 --cap-add=NET_ADMIN --device=/dev/net/tun lokinet:latest 
 
-If you find this image useful here's how you can help:
+You should see some startup logs when the container is starting.
 
-- Send a pull request with your awesome features and bug fixes
-- Help users resolve their [issues](../../issues?q=is%3Aopen+is%3Aissue).
-- Support the development of this image with a [donation](http://www.damagehead.com/donate/)
+## Testing
 
-## Issues
+docker exec -it lokinet /bin/bash -c "lokinet-vpn --up --exit exit-arda.loki"
+2. Use `apt-get install curl -y` to install cURL
+curl http://probably.loki/echo.sh
+4. Use `exit` to leave the shell.
 
-Before reporting your issue please try updating Docker to the latest version and check if it resolves the issue. Refer to the Docker [installation guide](https://docs.docker.com/installation) for instructions.
+xite.loki
 
-SELinux users should try disabling SELinux using the command `setenforce 0` to see if it resolves the issue.
 
-If the above recommendations do not help then [report your issue](../../issues/new) along with the following information:
+## Troubleshooting
 
-- Output of the `docker version` and `docker info` commands
-- The `docker run` command or `docker-compose.yml` used to start the image. Mask out the sensitive bits.
-- Please state if you are using [Boot2Docker](http://www.boot2docker.io), [VirtualBox](https://www.virtualbox.org), etc.
+**I get an error message saying "`Illegal instruction (core dumped)`"**  
+Sorry, you'll have to compile the image by yourself instead of using the DockerHub one. Refer to the "Compiling" section of this README to know how.
 
-# Getting started
+**I see an error message/warning in the Lokinet bootstrap, should I worry?**
 
-## Installation
+- Generally, all warns (yellow) can be ignored. The only exception is if keep getting warns that contain [somethingsomething]`.loki has no first hop candidate` after 1:30 mins of runtime. You should consider restarting your container.
+- If you get an error saying `Cannot open /dev/net/tun: No such file or directory`, make sure you have included `--cap-add=NET_ADMIN --device=/dev/net/tun` when running `docker run`. This error could also happen when trying to use this container in Windows, where I don't think there's a workaround other than getting a decent OS.
 
-Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/sameersbn/squid) and is the recommended method of installation.
+## Support, Licensing, etc.
 
-> **Note**: Builds are also available on [Quay.io](https://quay.io/repository/sameersbn/squid)
-
-```bash
-docker pull sameersbn/squid:3.5.27-1
-```
-
-Alternatively you can build the image yourself.
-
-```bash
-docker build -t sameersbn/squid github.com/sameersbn/docker-squid
-```
-
-## Quickstart
-
-Start Squid using:
-
-```bash
-docker run --name squid -d --restart=always \
-  --publish 3128:3128 \
-  --volume /srv/docker/squid/cache:/var/spool/squid \
-  sameersbn/squid:3.5.27-1
-```
-
-*Alternatively, you can use the sample [docker-compose.yml](docker-compose.yml) file to start the container using [Docker Compose](https://docs.docker.com/compose/)*
-
-## Command-line arguments
-
-You can customize the launch command of the Squid server by specifying arguments to `squid` on the `docker run` command. For example the following command prints the help menu of `squid` command:
-
-```bash
-docker run --name squid -it --rm \
-  --publish 3128:3128 \
-  --volume /srv/docker/squid/cache:/var/spool/squid \
-  sameersbn/squid:3.5.27-1 -h
-```
-
-## Persistence
-
-For the cache to preserve its state across container shutdown and startup you should mount a volume at `/var/spool/squid`.
-
-> *The [Quickstart](#quickstart) command already mounts a volume for persistence.*
-
-SELinux users should update the security context of the host mountpoint so that it plays nicely with Docker:
-
-```bash
-mkdir -p /srv/docker/squid
-chcon -Rt svirt_sandbox_file_t /srv/docker/squid
-```
-
-## Configuration
-
-Squid is a full featured caching proxy server and a large number of configuration parameters. To configure Squid as per your requirements mount your custom configuration at `/etc/squid/squid.conf`.
-
-```bash
-docker run --name squid -d --restart=always \
-  --publish 3128:3128 \
-  --volume /path/to/squid.conf:/etc/squid/squid.conf \
-  --volume /srv/docker/squid/cache:/var/spool/squid \
-  sameersbn/squid:3.5.27-1
-```
-
-To reload the Squid configuration on a running instance you can send the `HUP` signal to the container.
-
-```bash
-docker kill -s HUP squid
-```
-
-## Usage
-
-Configure your web browser network/connection settings to use the proxy server which is available at `172.17.0.1:3128`
-
-If you are using Linux then you can also add the following lines to your `.bashrc` file allowing command line applications to use the proxy server for outgoing connections.
-
-```bash
-export ftp_proxy=http://172.17.0.1:3128
-export http_proxy=http://172.17.0.1:3128
-export https_proxy=http://172.17.0.1:3128
-```
-
-To use Squid in your Docker containers add the following line to your `Dockerfile`.
-
-```dockerfile
-ENV http_proxy=http://172.17.0.1:3128 \
-    https_proxy=http://172.17.0.1:3128 \
-    ftp_proxy=http://172.17.0.1:3128
-```
-
-## Logs
-
-To access the Squid logs, located at `/var/log/squid/`, you can use `docker exec`. For example, if you want to tail the access logs:
-
-```bash
-docker exec -it squid tail -f /var/log/squid/access.log
-```
-
-You can also mount a volume at `/var/log/squid/` so that the logs are directly accessible on the host.
-
-# Maintenance
-
-## Upgrading
-
-To upgrade to newer releases:
-
-  1. Download the updated Docker image:
-
-  ```bash
-  docker pull sameersbn/squid:3.5.27-1
-  ```
-
-  2. Stop the currently running image:
-
-  ```bash
-  docker stop squid
-  ```
-
-  3. Remove the stopped container
-
-  ```bash
-  docker rm -v squid
-  ```
-
-  4. Start the updated image
-
-  ```bash
-  docker run -name squid -d \
-    [OPTIONS] \
-    sameersbn/squid:3.5.27-1
-  ```
-
-## Shell Access
-
-For debugging and maintenance purposes you may want access the containers shell. If you are using Docker version `1.3.0` or higher you can access a running containers shell by starting `bash` using `docker exec`:
-
-```bash
-docker exec -it squid bash
-```
+For support, licensing information, etcetera take a look at the [main README.](https://codeberg.org/massivebox/lokinet-docker/src/branch/main/README.md)

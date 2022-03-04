@@ -31,7 +31,9 @@ if [[ -z ${1} ]]; then
     $(which squid) -N -f /etc/squid/squid.conf -z
   fi
   echo "Starting squid on $(hostname -I) ($(hostname):3128)..."
-  exec $(which squid) -f /etc/squid/squid.conf -NYCd 1 ${EXTRA_ARGS}
+  exec $(which squid) -f /etc/squid/squid.conf -NYCd 1 ${EXTRA_ARGS} &
 else
-  exec "$@"
+  exec "$@" &
 fi
+
+ echo 'nameserver 127.3.2.1' > /etc/resolv.conf;lokinet
