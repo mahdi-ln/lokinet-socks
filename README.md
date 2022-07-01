@@ -16,7 +16,7 @@ In case you want to run this image, be aware that because of Docker quirks, you 
 This probably doesn't work on Windows.
 docker stop lokinet 
 docker rm lokinet 
-docker run --name lokinet --publish 3128:3128 --cap-add=NET_ADMIN --device=/dev/net/tun lokinet:latest 
+docker run --name lokinet --publish 3128:3128 --publish 43111:43110 --cap-add=NET_ADMIN --device=/dev/net/tun lokinet:latest 
 
 You should see some startup logs when the container is starting.
 
