@@ -34,6 +34,6 @@ Sorry, you'll have to compile the image by yourself instead of using the DockerH
 - Generally, all warns (yellow) can be ignored. The only exception is if keep getting warns that contain [somethingsomething]`.loki has no first hop candidate` after 1:30 mins of runtime. You should consider restarting your container.
 - If you get an error saying `Cannot open /dev/net/tun: No such file or directory`, make sure you have included `--cap-add=NET_ADMIN --device=/dev/net/tun` when running `docker run`. This error could also happen when trying to use this container in Windows, where I don't think there's a workaround other than getting a decent OS.
 
-## Support, Licensing, etc.
 
-For support, licensing information, etcetera take a look at the [main README.](https://codeberg.org/massivebox/lokinet-docker/src/branch/main/README.md)
+## Known problem
+https://github.com/mahdi-ln/lokinet-socks/issues/1
