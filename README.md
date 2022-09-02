@@ -1,33 +1,27 @@
-# Lokinet inside Docker
+# Lokinet-socks inside Docker
 
 Run Lokinet inside Docker without much hassle.
 Note that this image just downloads, compiles, and starts Lokinet. It has no practical purpose aside being a base on which other containers (like Caddy routed with Lokinet inside Docker) can be built.
 
 ## Compiling
 
-**Attention**: you don't need to do this! There's already a pre-built image on [DockerHub](https://hub.docker.com/r/massiveboxe/lokinet). You might want to do compile the image by yourself only if the DockerHub one doesn't work on your architecture or you don't trust that image.
-
 After cloning the repository and CD-ing in the correct folder, run:   
-`sudo docker build . -t massiveboxe/lokinet`
+`sudo docker build . -t mahdi/lokinet-socks`
 
 ## Running
 
 In case you want to run this image, be aware that because of Docker quirks, you have to give the container the NET_ADMIN privilege, and  share the TUN device.
 This probably doesn't work on Windows.
-docker stop lokinet 
-docker rm lokinet 
-docker run --name lokinet --publish 3128:3128 --publish 43111:43110 --cap-add=NET_ADMIN --device=/dev/net/tun lokinet:latest 
+
+docker run --name lokinet-socks --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi/lokinet-socks:latest 
 
 You should see some startup logs when the container is starting.
 
 ## Testing
 
-docker exec -it lokinet /bin/bash -c "lokinet-vpn --up --exit exit-arda.loki"
-2. Use `apt-get install curl -y` to install cURL
-curl http://probably.loki/echo.sh
-4. Use `exit` to leave the shell.
-
-xite.loki
+1. docker exec -it lokinet /bin/bash
+2. curl http://probably.loki/echo.sh
+3. Use `exit` to leave the shell.
 
 
 ## Troubleshooting
