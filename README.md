@@ -1,4 +1,4 @@
-# Lokinet-socks inside Docker
+# Lokinet socks proxy inside Docker
 
 Run Lokinet inside Docker without much hassle.
 Note that this image just downloads, compiles, and starts Lokinet. It has no practical purpose aside being a base on which other containers (like Caddy routed with Lokinet inside Docker) can be built.
