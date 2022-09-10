@@ -13,7 +13,7 @@ After cloning the repository and CD-ing in the correct folder, run:
 In case you want to run this image, be aware that because of Docker quirks, you have to give the container the NET_ADMIN privilege, and  share the TUN device.
 This probably doesn't work on Windows.
 
-docker run --name lokinet-socks --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi/lokinet-socks:latest 
+`docker run --name lokinet-socks --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi/lokinet-socks:latest`
 
 You should see some startup logs when the container is starting.
 
