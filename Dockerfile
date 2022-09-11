@@ -17,6 +17,7 @@ COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 RUN mkdir /var/lib/lokinet/conf.d
 COPY 00-exit.ini /var/lib/lokinet/conf.d/00-exit.ini 
+COPY lokinet.ini /var/lib/lokinet/lokinet.ini 
 
 
 #DANTE
