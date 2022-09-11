@@ -23,7 +23,7 @@ You should see some startup logs when the container is starting.
 3. inside docker run `sockd -f $CFGFILE -p $PIDFILE -N $WORKERS`
 ## Testing
 
-1. docker exec -it lokinet /bin/bash
+1. docker exec -it lokinet-socks /bin/bash
 2. curl http://probably.loki/echo.sh
 3. Use `exit` to leave the shell.
 
