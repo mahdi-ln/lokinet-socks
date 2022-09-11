@@ -39,3 +39,6 @@ Sorry, you'll have to compile the image by yourself instead of using the DockerH
 
 ## Known problem
 https://github.com/mahdi-ln/lokinet-socks/issues/1
+
+## Law change that protect you from evil sibling
+https://www.facebook.com/mahm25/posts/1078633392633275
