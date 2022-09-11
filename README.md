@@ -37,8 +37,5 @@ Sorry, you'll have to compile the image by yourself instead of using the DockerH
 - If you get an error saying `Cannot open /dev/net/tun: No such file or directory`, make sure you have included `--cap-add=NET_ADMIN --device=/dev/net/tun` when running `docker run`. This error could also happen when trying to use this container in Windows, where I don't think there's a workaround other than getting a decent OS.
 
 
-## Known problem
-https://github.com/mahdi-ln/lokinet-socks/issues/1
-
 ## Law change that protect you from evil sibling
 https://www.facebook.com/mahm25/posts/1078633392633275
