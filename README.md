@@ -1,3 +1,6 @@
+## My cause
+Law change that protect you from evil sibling
+https://www.facebook.com/mahm25/posts/1078633392633275
 # Lokinet socks proxy inside Docker
 
 Run Lokinet inside Docker without much hassle.
@@ -15,12 +18,11 @@ After cloning the repository and CD-ing in the correct folder, run:
 In case you want to run this image, be aware that because of Docker quirks, you have to give the container the NET_ADMIN privilege, and  share the TUN device.
 This probably doesn't work on Windows. (Use Linux)
 
-1. `docker run --name lokinet --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi5/lokinet-socks:latest`
+`docker run --name lokinet --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi5/lokinet-socks:latest`
 
 You should see some startup logs when the container is starting.
 
-2. `docker exec -it lokinet /bin/bash`
-3. inside docker run `sockd -f $CFGFILE -p $PIDFILE -N $WORKERS`
+
 ## Testing
 
 1. docker exec -it lokinet /bin/bash
@@ -39,5 +41,4 @@ Sorry, you'll have to compile the image by yourself instead of using the DockerH
 - If you get an error saying `Cannot open /dev/net/tun: No such file or directory`, make sure you have included `--cap-add=NET_ADMIN --device=/dev/net/tun` when running `docker run`. This error could also happen when trying to use this container in Windows, where I don't think there's a workaround other than getting a decent OS.
 
 
-## Law change that protect you from evil sibling
-https://www.facebook.com/mahm25/posts/1078633392633275
+
