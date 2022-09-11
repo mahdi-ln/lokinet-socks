@@ -13,14 +13,14 @@ After cloning the repository and CD-ing in the correct folder, run:
 ## Running
 
 In case you want to run this image, be aware that because of Docker quirks, you have to give the container the NET_ADMIN privilege, and  share the TUN device.
-This probably doesn't work on Windows.
+This probably doesn't work on Windows. (Use Linux)
 
 1. `docker run --name lokinet-socks --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi5/lokinet-socks:latest`
 
 You should see some startup logs when the container is starting.
 
 2. `docker exec -it lokinet-socks /bin/bash`
-3. inside docker`# sockd -f $CFGFILE -p $PIDFILE -N $WORKERS`
+3. inside docker run `sockd -f $CFGFILE -p $PIDFILE -N $WORKERS`
 ## Testing
 
 1. docker exec -it lokinet /bin/bash
