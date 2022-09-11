@@ -10,7 +10,7 @@ WORKDIR lokinet
 RUN mkdir build
 WORKDIR build
 
-RUN cmake .. -DBUILD_STATIC_DEPS=OFF -DBUILD_SHARED_LIBS=ON -DSTATIC_LINK=OFF
+RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
 RUN make -j$(nproc)
 RUN make install
 WORKDIR daemon
