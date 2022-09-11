@@ -52,7 +52,7 @@ EXPOSE 1080
 
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
-CMD sockd -f $CFGFILE -p $PIDFILE -N $WORKERS
+
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 
