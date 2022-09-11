@@ -13,9 +13,6 @@ WORKDIR build
 RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
 RUN make -j$(nproc)
 RUN make install
-WORKDIR daemon
-RUN chmod +x lokinet lokinet-bootstrap lokinet-vpn
-RUN mkdir /var/lib/lokinet
 RUN lokinet -g
 RUN ./lokinet-bootstrap
 
