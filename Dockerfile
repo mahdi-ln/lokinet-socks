@@ -3,7 +3,8 @@ FROM debian:bullseye
 
 #lokinet
 RUN apt-get update 
-RUN apt-get install build-essential cmake git libcap-dev pkg-config automake libtool libuv1-dev libsodium-dev libzmq3-dev libcurl4-openssl-dev libevent-dev nettle-dev libunbound-dev libsqlite3-dev libssl-dev libcap2-bin -y
+ENV lokinet_DEPS="build-essential cmake git libcap-dev pkg-config automake libtool libuv1-dev libsodium-dev libzmq3-dev libcurl4-openssl-dev libevent-dev nettle-dev libunbound-dev libsqlite3-dev libssl-dev libcap2-bin"
+RUN apt-get install ${lokinet_DEPS} -y
 RUN git clone --recursive https://github.com/oxen-io/lokinet
 WORKDIR lokinet
 RUN mkdir build
@@ -11,11 +12,13 @@ WORKDIR build
 
 RUN cmake .. -DBUILD_STATIC_DEPS=OFF -DBUILD_SHARED_LIBS=ON -DSTATIC_LINK=OFF
 RUN make -j$(nproc)
-
+RUN make install
 WORKDIR daemon
 RUN chmod +x lokinet lokinet-bootstrap lokinet-vpn
 RUN mkdir /var/lib/lokinet
+RUN lokinet -g
 RUN ./lokinet-bootstrap
+
 RUN mkdir /var/lib/lokinet/conf.d
 COPY 00-exit.ini /var/lib/lokinet/conf.d/00-exit.ini 
 COPY lokinet.ini /var/lib/lokinet/conf.d/lokinet.ini 
@@ -41,7 +44,7 @@ RUN set -xe \
         && make install \
         && cd .. \
         && rm -rf $DANTE_TEMP \
-    && apt-get purge -y --auto-remove $DANTE_DEPS \
+    && apt-get purge -y --auto-remove $DANTE_DEPS ${lokinet_DEPS}\
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./data/sockd.conf /etc/dante/sockd.conf
