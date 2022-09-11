@@ -5,15 +5,17 @@ Note that this image just downloads, compiles, and starts Lokinet. It has no pra
 
 ## Compiling
 
+**Attention**: you don't need to do this! There's already a pre-built image on [DockerHub](https://hub.docker.com/r/mahdi5/lokinet-socks). You might want to do compile the image by yourself only if the DockerHub one doesn't work on your architecture or you don't trust that image.
+
 After cloning the repository and CD-ing in the correct folder, run:   
-`sudo docker build . -t mahdi/lokinet-socks`
+`sudo docker build . -t mahdi5/lokinet-socks`
 
 ## Running
 
 In case you want to run this image, be aware that because of Docker quirks, you have to give the container the NET_ADMIN privilege, and  share the TUN device.
 This probably doesn't work on Windows.
 
-`docker run --name lokinet-socks --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi/lokinet-socks:latest`
+`docker run --name lokinet-socks --publish 1080:1080 --cap-add=NET_ADMIN --device=/dev/net/tun mahdi5/lokinet-socks:latest`
 
 You should see some startup logs when the container is starting.
 
