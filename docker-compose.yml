@@ -1,0 +1,14 @@
+version: "3"
+
+# Try `docker-compose up`
+
+services:
+    lokinet:
+        image: mahdi5/lokinet-socks
+        cap_add:
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun
+        ports:
+            - 1080:1080
+
