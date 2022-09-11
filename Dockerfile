@@ -1,14 +1,23 @@
-FROM massiveboxe/lokinet
+FROM ubuntu:20.04
 
 
 #lokinet
 RUN apt-get update 
 
+
+RUN apt install --no-install-recommends --no-install-suggests -y ca-certificates curl
+RUN curl -so /etc/apt/trusted.gpg.d/oxen.gpg https://deb.oxen.io/pub.gpg
+RUN echo "deb https://deb.oxen.io focal main" |  tee /etc/apt/sources.list.d/oxen.list
+RUN apt update
+RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
+RUN apt install lokinet -y
+
+RUN apt install sudo  --no-install-recommends libcap2-bin -y
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 RUN mkdir /var/lib/lokinet/conf.d
 COPY 00-exit.ini /var/lib/lokinet/conf.d/00-exit.ini 
-COPY lokinet.ini /var/lib/lokinet/lokinet.ini 
+COPY lokinet.ini /var/lib/lokinet/conf.d/lokinet.ini 
 
 
 #DANTE
