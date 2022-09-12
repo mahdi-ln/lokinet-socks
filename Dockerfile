@@ -7,7 +7,7 @@ RUN apt-get update
 
 RUN apt install --no-install-recommends --no-install-suggests -y ca-certificates curl
 RUN curl -so /etc/apt/trusted.gpg.d/oxen.gpg https://deb.oxen.io/pub.gpg
-RUN echo "deb https://deb.oxen.io focal main" |  tee /etc/apt/sources.list.d/oxen.list
+RUN echo "deb https://deb.oxen.io bullseye main" |  tee /etc/apt/sources.list.d/oxen.list
 RUN apt update
 RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 RUN apt install lokinet -y
