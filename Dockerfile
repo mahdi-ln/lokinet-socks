@@ -3,19 +3,16 @@ FROM debian:bullseye
 
 #lokinet
 RUN apt-get update 
-ENV lokinet_DEPS="build-essential cmake git libcap-dev pkg-config automake libtool libuv1-dev libsodium-dev libzmq3-dev libcurl4-openssl-dev libevent-dev nettle-dev libunbound-dev libsqlite3-dev libssl-dev libcap2-bin"
-RUN apt-get install ${lokinet_DEPS} -y
-RUN git clone --recursive https://github.com/oxen-io/lokinet
-WORKDIR lokinet
-RUN mkdir build
-WORKDIR build
 
-RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
-RUN make -j$(nproc)
-RUN make install
-RUN lokinet -g
-RUN ./lokinet-bootstrap
 
+RUN apt install --no-install-recommends --no-install-suggests -y ca-certificates curl
+RUN curl -so /etc/apt/trusted.gpg.d/oxen.gpg https://deb.oxen.io/pub.gpg
+RUN echo "deb https://deb.oxen.io focal main" |  tee /etc/apt/sources.list.d/oxen.list
+RUN apt update
+RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
+RUN apt install lokinet -y
+
+RUN apt install sudo  --no-install-recommends libcap2-bin -y
 RUN mkdir /var/lib/lokinet/conf.d
 COPY 00-exit.ini /var/lib/lokinet/conf.d/00-exit.ini 
 COPY lokinet.ini /var/lib/lokinet/conf.d/lokinet.ini 
@@ -27,7 +24,7 @@ ENV DANTE_URL=https://www.inet.no/dante/files/dante-$DANTE_VER.tar.gz
 ENV DANTE_SHA=4c97cff23e5c9b00ca1ec8a95ab22972813921d7fbf60fc453e3e06382fc38a7
 ENV DANTE_FILE=dante.tar.gz
 ENV DANTE_TEMP=dante
-ENV DANTE_DEPS="build-essential curl"
+ENV DANTE_DEPS="build-essential"
 
 RUN set -xe \
     
