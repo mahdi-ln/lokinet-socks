@@ -38,7 +38,7 @@ RUN set -xe \
         && make install \
         && cd .. \
         && rm -rf $DANTE_TEMP \
-    && apt-get purge -y --auto-remove $DANTE_DEPS ${lokinet_DEPS}\
+    && apt-get purge -y --auto-remove $DANTE_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./data/sockd.conf /etc/dante/sockd.conf
